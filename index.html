@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التداول السريع VIP</title>
+    <!-- مكتبة تيليجرام الرسمية للتطبيقات المصغرة -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #121824;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+        .title {
+            font-size: 20px;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .card {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            border: 1px solid #334155;
+        }
+        .card h3 {
+            font-size: 16px;
+            color: #f1f5f9;
+            margin-bottom: 10px;
+        }
+        .pair-btn {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+        .pair-btn:active {
+            background-color: #1d4ed8;
+            transform: scale(0.98);
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            margin-top: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1 class="title">⚡ منصة التداول السريع VIP</h1>
+        <p class="subtitle">تحليل أزواج العملات بالذكاء الاصطناعي</p>
+    </div>
+
+    <!-- قسم اختيار أزواج العملات -->
+    <div class="card">
+        <h3>📊 اختر الزوج للتحليل الفوري:</h3>
+        <button class="pair-btn" onclick="sendSignal('EURUSD')">🇪🇺 EUR / USD (اليورو دولار)</button>
+        <button class="pair-btn" onclick="sendSignal('GBPUSD')">💷 GBP / USD (البوند دولار)</button>
+        <button class="pair-btn" onclick="sendSignal('BTCUSD')">🪙 BTC / USD (البيتكوين)</button>
+    </div>
+
+    <!-- قسم إرسال ה-UID -->
+    <div class="card">
+        <h3>🔑 إرسال ID الحساب للتفعيل:</h3>
+        <input type="number" id="uidInput" class="input-field" placeholder="أدخل الـ UID الخاص بك هنا...">
+        <button class="pair-btn" style="background-color: #10b981;" onclick="submitUID()">إرسال ID للمراجعة 🚀</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function sendSignal(pair) {
+            tg.sendData("ANALYZE:" + pair);
+            tg.close();
+        }
+
+        function submitUID() {
+            const uid = document.getElementById("uidInput").value.trim();
+            if (uid.length >= 5) {
+                tg.sendData("UID:" + uid);
+                tg.close();
+            } else {
+                alert("يرجى إدخال رقم ID صحيح يتكون من 5 أرقام على الأقل.");
+            }
+        }
+    </script>
+</body>
+</html>
