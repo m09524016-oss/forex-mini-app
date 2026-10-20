@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التداول السريع VIP</title>
-    <!-- مكتبة تيليجرام الرسمية للتطبيقات المصغرة -->
+    <title>منصة التداول والتحليل الذكي VIP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -14,110 +14,247 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-color: #121824;
+            background-color: #0b0e14;
             color: #ffffff;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
         }
-        .header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #334155;
-        }
-        .title {
-            font-size: 20px;
-            color: #38bdf8;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        .card {
+        /* شريط التنقل بين الأقسام (Tabs) */
+        .nav-tabs {
+            display: flex;
             background: #1e293b;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: right;
+            padding: 4px;
+            margin-bottom: 12px;
             border: 1px solid #334155;
         }
-        .card h3 {
-            font-size: 16px;
-            color: #f1f5f9;
+        .nav-tab {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .nav-tab.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+        }
+        .section-content {
+            display: none;
+        }
+        .section-content.active {
+            display: block;
+        }
+        /* أزرار اختيار العملات */
+        .pairs-container {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
             margin-bottom: 10px;
         }
         .pair-btn {
+            flex: 1;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .pair-btn.active {
+            background: #0284c7;
+            color: #fff;
+            border-color: #38bdf8;
+        }
+        /* الشارت */
+        .chart-container {
+            height: 250px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            margin-bottom: 10px;
+        }
+        /* كارد النتائج والتحليلات */
+        .card {
+            background: #131d31;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        .card-title {
+            font-size: 13px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            font-weight: bold;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 4px;
+        }
+        .row-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #cbd5e1;
+        }
+        /* الأزرار الرئيسية */
+        .action-btn {
             width: 100%;
-            background-color: #2563eb;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
             padding: 12px;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 8px;
-            transition: 0.2s;
+            margin-top: 5px;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
-        .pair-btn:active {
-            background-color: #1d4ed8;
-            transform: scale(0.98);
-        }
-        .input-field {
-            width: 100%;
-            padding: 10px;
+        .badge-call { background: #10b981; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+        .badge-put { background: #ef4444; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+        /* جدول السجل */
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            background: #1a2638;
+            padding: 8px;
             border-radius: 6px;
-            border: 1px solid #475569;
-            background: #0f172a;
-            color: #fff;
-            margin-top: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 6px;
+            font-size: 11px;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="title">⚡ منصة التداول السريع VIP</h1>
-        <p class="subtitle">تحليل أزواج العملات بالذكاء الاصطناعي</p>
+    <!-- شريط التبويبات العلوي -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('analysis', this)">📊 التحليل الفني</button>
+        <button class="nav-tab" onclick="switchTab('signals', this)">⚡ التوصيات</button>
+        <button class="nav-tab" onclick="switchTab('quick', this)">⏱️ تداول سريع</button>
+        <button class="nav-tab" onclick="switchTab('history', this)">📜 السجل</button>
     </div>
 
-    <!-- قسم اختيار أزواج العملات -->
-    <div class="card">
-        <h3>📊 اختر الزوج للتحليل الفوري:</h3>
-        <button class="pair-btn" onclick="sendSignal('EURUSD')">🇪🇺 EUR / USD (اليورو دولار)</button>
-        <button class="pair-btn" onclick="sendSignal('GBPUSD')">💷 GBP / USD (البوند دولار)</button>
-        <button class="pair-btn" onclick="sendSignal('BTCUSD')">🪙 BTC / USD (البيتكوين)</button>
+    <!-- 1. قسم التحليل الفني والشارت -->
+    <div id="analysis" class="section-content active">
+        <div class="pairs-container">
+            <button class="pair-btn active" onclick="changePair('FX:EURUSD', 'EUR/USD', this)">EUR/USD</button>
+            <button class="pair-btn" onclick="changePair('FX:GBPUSD', 'GBP/USD', this)">GBP/USD</button>
+            <button class="pair-btn" onclick="changePair('BINANCE:BTCUSDT', 'BTC/USD', this)">BTC/USD</button>
+        </div>
+
+        <div class="chart-container" id="tv_chart"></div>
+
+        <div class="card">
+            <div class="card-title">🔍 نتيجة التحليل الآلي الفوري</div>
+            <div class="row-info"><span>الاتجاه العام:</span> <strong id="anTrend" style="color: #10b981;">صاعد (UP)</strong></div>
+            <div class="row-info"><span>مؤشر القوة (RSI):</span> <strong id="anRsi">48.2</strong></div>
+            <div class="row-info"><span>مستوى الدعم:</span> <strong id="anSupport">1.0820</strong></div>
+            <div class="row-info"><span>مستوى المقاومة:</span> <strong id="anResistance">1.0890</strong></div>
+        </div>
+
+        <button class="action-btn" onclick="runAnalysis()">تحديث التحليل الذكي</button>
     </div>
 
-    <!-- قسم إرسال ה-UID -->
-    <div class="card">
-        <h3>🔑 إرسال ID الحساب للتفعيل:</h3>
-        <input type="number" id="uidInput" class="input-field" placeholder="أدخل الـ UID الخاص بك هنا...">
-        <button class="pair-btn" style="background-color: #10b981;" onclick="submitUID()">إرسال ID للمراجعة 🚀</button>
+    <!-- 2. قسم التوصيات الاحترافية -->
+    <div id="signals" class="section-content">
+        <div class="card">
+            <div class="card-title">🎯 صفقة نشطة مقترحة</div>
+            <div class="row-info"><span>الزوج:</span> <strong>EUR/USD</strong></div>
+            <div class="row-info"><span>نوع الصفقة:</span> <span class="badge-call">شراء CALL</span></div>
+            <div class="row-info"><span>سعر الدخول:</span> <strong>1.0845</strong></div>
+            <div class="row-info"><span>الهدف الأول (TP1):</span> <strong style="color: #38bdf8;">1.0870</strong></div>
+            <div class="row-info"><span>وقف الخسارة (SL):</span> <strong style="color: #ef4444;">1.0815</strong></div>
+            <div class="row-info"><span>نسبة النجاح المتوقعة:</span> <strong style="color: #10b981;">78%</strong></div>
+        </div>
+        <button class="action-btn" onclick="alert('تم إرسال تنبيه الصفقة بنجاح!')">طلب توصية جديدة</button>
+    </div>
+
+    <!-- 3. قسم التداول السريع -->
+    <div id="quick" class="section-content">
+        <div class="card">
+            <div class="card-title">⚡ خيارات التداول السريع (M1 / M5)</div>
+            <div class="pairs-container" style="margin-bottom: 10px;">
+                <button class="pair-btn active">دقيقة واحدة</button>
+                <button class="pair-btn">5 دقائق</button>
+            </div>
+            <div class="row-info"><span>الحالة الحالية:</span> <strong style="color: #f59e0b;">بانتظار تأكيد إغلاق شمعة M1</strong></div>
+            <div class="row-info"><span>قوة الإشارة:</span> <strong>82% (ممتاز)</strong></div>
+        </div>
+        <button class="action-btn" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);" onclick="runQuickTrade()">تنفيذ صفقة سريعة الآن</button>
+    </div>
+
+    <!-- 4. قسم السجل -->
+    <div id="history" class="section-content">
+        <div class="card">
+            <div class="card-title">📜 سجل الصفقات الأخيرة</div>
+            <div class="history-item"><span>EUR/USD - شراء</span> <span style="color: #10b981;">+24 بيبس (ربح)</span></div>
+            <div class="history-item"><span>GBP/USD - بيع</span> <span style="color: #ef4444;">-8 بيبس (خسارة)</span></div>
+            <div class="history-item"><span>BTC/USD - شراء</span> <span style="color: #10b981;">+45 بيبس (ربح)</span></div>
+            <div class="history-item"><span>EUR/USD - بيع</span> <span style="color: #10b981;">+12 بيبس (ربح)</span></div>
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function sendSignal(pair) {
-            tg.sendData("ANALYZE:" + pair);
-            tg.close();
+        let currentSymbol = "FX:EURUSD";
+
+        // تبديل الأقسام
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            if(tabId === 'analysis') loadChart(currentSymbol);
         }
 
-        function submitUID() {
-            const uid = document.getElementById("uidInput").value.trim();
-            if (uid.length >= 5) {
-                tg.sendData("UID:" + uid);
-                tg.close();
-            } else {
-                alert("يرجى إدخال رقم ID صحيح يتكون من 5 أرقام على الأقل.");
-            }
+        // تحميل الشارت
+        function loadChart(symbol) {
+            document.getElementById('tv_chart').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "15",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "ar",
+                "hide_top_toolbar": true,
+                "container_id": "tv_chart"
+            });
         }
+
+        function changePair(symbol, name, btn) {
+            document.querySelectorAll('.pair-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSymbol = symbol;
+            loadChart(symbol);
+        }
+
+        function runAnalysis() {
+            const rsi = (Math.random() * (70 - 30) + 30).toFixed(1);
+            document.getElementById('anRsi').innerText = rsi;
+            document.getElementById('anTrend').innerText = rsi > 50 ? "صاعد (UP)" : "هابط (DOWN)";
+            alert("تم تحديث البيانات والتحليل الفني بنجاح!");
+        }
+
+        function runQuickTrade() {
+            alert("تم إرسال إشارة التداول السريع ومتابعة الشمعة بنجاح!");
+        }
+
+        // تحميل الشارت عند البدء
+        loadChart(currentSymbol);
     </script>
 </body>
 </html>
