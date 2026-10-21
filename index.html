@@ -1,76 +1,81 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد التداول والذكاء الاصطناعي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Plus Trading Assistant</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent-color: #f59e0b;
-            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --secondary-color: #2563eb;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --border-color: #334155;
+            --bg-dark: #0b0f19;
+            --card-bg: #151c2c;
+            --card-border: #232d45;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --accent-blue: #29b6f6;
+            --text-primary: #ffffff;
+            --text-secondary: #8e9baf;
+            --gold: #ffb300;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
             margin: 0;
-            padding: 12px;
-            direction: rtl;
+            padding: 0;
+            padding-bottom: 75px;
+            min-height: 100vh;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .header h2 {
-            margin: 5px 0;
-            color: var(--accent-color);
-            font-size: 20px;
-        }
-
-        .header p {
-            font-size: 12px;
-            color: #94a3b8;
-            margin: 0;
-        }
-
-        .tabs {
+        /* Top Header */
+        .app-header {
             display: flex;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(21, 28, 44, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .tab-btn {
-            flex: 1;
-            white-space: nowrap;
-            background: none;
-            border: none;
-            color: #94a3b8;
-            padding: 8px 8px;
-            font-size: 12px;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #29b6f6, #00e676);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            color: #000;
         }
 
-        .tab-btn.active {
-            background-color: var(--secondary-color);
-            color: white;
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #29b6f6, #00e676);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            padding: 16px;
         }
 
         .tab-content {
@@ -81,173 +86,310 @@
             display: block;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+        /* Modern Cards */
+        .ai-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 12px;
         }
 
-        .status-pending {
-            background-color: rgba(245, 158, 11, 0.2);
-            color: var(--accent-color);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .status-active {
-            background-color: rgba(16, 185, 129, 0.2);
-            color: var(--success-color);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .badge-status {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
         }
 
-        h3 {
-            margin-top: 0;
-            font-size: 16px;
-            color: var(--accent-color);
+        .badge-active {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(0, 230, 118, 0.3);
         }
 
-        p {
-            font-size: 13px;
-            color: #cbd5e1;
-            line-style: normal;
-            line-height: 1.5;
+        .badge-pending {
+            background: rgba(255, 179, 0, 0.15);
+            color: var(--gold);
+            border: 1px solid rgba(255, 179, 0, 0.3);
         }
 
-        .form-group {
-            margin-top: 12px;
+        /* Inputs & Buttons */
+        .input-group {
+            margin-bottom: 14px;
         }
 
-        label {
-            display: block;
+        .input-label {
             font-size: 12px;
+            color: var(--text-secondary);
             margin-bottom: 6px;
-            color: #94a3b8;
+            display: block;
         }
 
-        input, select {
+        .custom-input, .custom-select {
             width: 100%;
-            padding: 10px;
-            background-color: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: white;
+            padding: 12px 14px;
+            background: #0b0f19;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: #fff;
             font-size: 14px;
-            box-sizing: border-box;
             outline: none;
         }
 
-        .btn {
+        .custom-input:focus, .custom-select:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-primary {
             width: 100%;
-            background: var(--accent-gradient);
-            color: #0f172a;
+            padding: 14px;
+            border-radius: 12px;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
+            background: linear-gradient(135deg, #29b6f6 0%, #0288d1 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(41, 182, 246, 0.3);
         }
 
-        .box-result {
-            background: #0f172a;
-            border-right: 4px solid var(--success-color);
-            padding: 12px;
+        /* Signal Box Styling */
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .pair-title {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .signal-action {
+            padding: 6px 14px;
             border-radius: 8px;
-            margin-top: 10px;
+            font-weight: 800;
+            font-size: 13px;
         }
 
-        .alert-error {
-            color: var(--danger-color);
-            font-size: 12px;
-            margin-top: 8px;
-            display: none;
+        .action-buy {
+            background: rgba(0, 230, 118, 0.2);
+            color: var(--accent-green);
         }
 
-        .locked-msg {
+        .action-sell {
+            background: rgba(255, 82, 82, 0.2);
+            color: var(--accent-red);
+        }
+
+        .signal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .data-box {
+            background: #0b0f19;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        .data-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .data-val {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* Currency Strength Bars */
+        .strength-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .bar-bg {
+            flex-grow: 1;
+            height: 8px;
+            background: #0b0f19;
+            border-radius: 4px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--accent-blue);
+        }
+
+        /* Bottom Navigation Bar (AI Plus Style) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: rgba(21, 28, 44, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            text-decoration: none;
+            cursor: pointer;
+            width: 25%;
+            transition: 0.2s;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+
+        .locked-view {
             text-align: center;
-            padding: 25px 10px;
-            color: #94a3b8;
+            padding: 40px 10px;
+            color: var(--text-secondary);
+        }
+
+        .locked-view i {
+            font-size: 36px;
+            margin-bottom: 12px;
+            color: var(--gold);
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2>🤖 مساعد التداول الذكي</h2>
-        <p>المنصة المدعومة للتحليل وإشارات التداول المتقدمة</p>
-    </div>
-
-    <!-- شريط التبويبات المتكاملة -->
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('account', this)">الحساب</button>
-        <button class="tab-btn" onclick="switchTab('analysis', this)">التحليل الفني</button>
-        <button class="tab-btn" onclick="switchTab('signals', this)">التوصيات</button>
-        <button class="tab-btn" onclick="switchTab('history', this)">السجل</button>
-    </div>
-
-    <!-- 1. تبويب الحساب -->
-    <div id="account" class="tab-content active">
-        <div class="card">
-            <div id="badgeStatus" class="status-badge status-pending">🟡 حالة الحساب: بانتظار التحقق</div>
-            <h3>تأكيد حساب التداول</h3>
-            <p>أدخل رقم الـ Trader ID الخاص بك لتفعيل الأدوات وفتح الميزات كاملة:</p>
-            
-            <div class="form-group">
-                <label>رقم معرف الحساب (Trader ID):</label>
-                <input type="text" id="traderIdInput" placeholder="أدخل الرقم هنا...">
-            </div>
-
-            <div id="errorMsg" class="alert-error">⚠️ رقم الـ ID غير مسجل، يرجى التأكد أو التسجيل عبر رابط الإحالة.</div>
-
-            <button class="btn" onclick="verifyTrader()">تأكيد وتفعيل الحساب</button>
+    <!-- Header -->
+    <div class="app-header">
+        <div class="user-info">
+            <div class="avatar">AI</div>
+            <span class="brand-title">AI PLUS</span>
         </div>
+        <div id="topBadge" class="badge-status badge-pending">Pending</div>
     </div>
 
-    <!-- 2. تبويب التحليل الفني -->
-    <div id="analysis" class="tab-content">
-        <div class="card">
-            <div id="analysisBody">
-                <div class="locked-msg">
-                    <h3>🔒 المحتوى مقفل</h3>
-                    <p>قم بتفعيل حسابك من تبويب (الحساب) لفتح التحليلات وقوة العملات.</p>
+    <div class="container">
+
+        <!-- 1. Profile / Account Tab -->
+        <div id="tab-profile" class="tab-content active">
+            <div class="ai-card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fa-solid fa-user-shield" style="color:var(--accent-blue);"></i> Account Verification</span>
+                </div>
+                <p style="font-size:13px; color:var(--text-secondary); margin-top:0;">
+                    Enter your Trader ID below to connect your trading account and unlock full AI tools.
+                </p>
+
+                <div class="input-group">
+                    <label class="input-label">Trader Account ID</label>
+                    <input type="text" id="traderIdInput" class="custom-input" placeholder="e.g. 139822533">
+                </div>
+
+                <div id="errorMsg" style="color:var(--accent-red); font-size:12px; display:none; margin-bottom:10px;">
+                    <i class="fa-solid fa-circle-exclamation"></i> Invalid Trader ID. Please verify your registration.
+                </div>
+
+                <button class="btn-primary" onclick="verifyTrader()">
+                    <i class="fa-solid fa-bolt"></i> Verify & Activate
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. Analysis Tab -->
+        <div id="tab-analysis" class="tab-content">
+            <div id="analysisContent">
+                <div class="ai-card locked-view">
+                    <i class="fa-solid fa-lock"></i>
+                    <h3>Analysis Locked</h3>
+                    <p>Verify your Trader ID in Profile to view technical analysis and currency strength.</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 3. تبويب التوصيات -->
-    <div id="signals" class="tab-content">
-        <div class="card">
-            <div id="signalsBody">
-                <div class="locked-msg">
-                    <h3>🔒 المحتوى مقفل</h3>
-                    <p>قم بتفعيل حسابك من تبويب (الحساب) لعرض إشارات التداول اليومية.</p>
+        <!-- 3. Signals Tab -->
+        <div id="tab-signals" class="tab-content">
+            <div id="signalsContent">
+                <div class="ai-card locked-view">
+                    <i class="fa-solid fa-lock"></i>
+                    <h3>Signals Locked</h3>
+                    <p>Verify your Trader ID in Profile to access live AI trading signals.</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 4. تبويب السجل (History) -->
-    <div id="history" class="tab-content">
-        <div class="card">
-            <div id="historyBody">
-                <div class="locked-msg">
-                    <h3>🔒 المحتوى مقفل</h3>
-                    <p>قم بتفعيل حسابك لعرض سجل الأداء والصفقات السابقة.</p>
+        <!-- 4. History Tab -->
+        <div id="tab-history" class="tab-content">
+            <div id="historyContent">
+                <div class="ai-card locked-view">
+                    <i class="fa-solid fa-lock"></i>
+                    <h3>History Locked</h3>
+                    <p>Verify your Trader ID to see past signal accuracy and performance stats.</p>
                 </div>
             </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchNav('profile', this)">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </div>
+        <div class="nav-item" onclick="switchNav('analysis', this)">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Analysis</span>
+        </div>
+        <div class="nav-item" onclick="switchNav('signals', this)">
+            <i class="fa-solid fa-signal"></i>
+            <span>Signals</span>
+        </div>
+        <div class="nav-item" onclick="switchNav('history', this)">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>History</span>
         </div>
     </div>
 
@@ -257,104 +399,172 @@
 
         const OWNER_ID = "139822533";
 
-        function switchTab(tabId, btn) {
+        function switchNav(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('tab-' + tabName).classList.add('active');
+            element.classList.add('active');
         }
 
         function verifyTrader() {
-            const idVal = document.getElementById('traderIdInput').value.trim();
-            const errorElement = document.getElementById('errorMsg');
+            const val = document.getElementById('traderIdInput').value.trim();
+            const err = document.getElementById('errorMsg');
 
-            if (!idVal) {
-                alert('يرجى كتابة رقم Trader ID أولاً');
-                return;
-            }
+            if (val === OWNER_ID) {
+                err.style.display = 'none';
 
-            if (idVal === OWNER_ID) {
-                errorElement.style.display = 'none';
+                // Update Header Badge
+                const topBadge = document.getElementById('topBadge');
+                topBadge.className = 'badge-status badge-active';
+                topBadge.innerText = 'Verified 🟢';
 
-                document.getElementById('badgeStatus').className = 'status-badge status-active';
-                document.getElementById('badgeStatus').innerText = '🟢 حالة الحساب: مفعل بنجاح (المالك)';
-
-                // محتوى التحليل الفني وقوة العملات
-                document.getElementById('analysisBody').innerHTML = `
-                    <h3>📊 التحليل الفني وقوة العملات</h3>
-                    <div class="form-group">
-                        <label>اختر زوج العملات / الأصل:</label>
-                        <select id="assetSelect">
-                            <option value="XAUUSD">الذهب (XAUUSD)</option>
-                            <option value="EURUSD">يورو / دولار (EURUSD)</option>
-                        </select>
+                // Populate Analysis
+                document.getElementById('analysisContent').innerHTML = `
+                    <div class="ai-card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fa-solid fa-gauge-high" style="color:var(--accent-blue);"></i> Market Trend Analysis</span>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Select Asset</label>
+                            <select id="assetSelect" class="custom-select">
+                                <option value="XAUUSD">GOLD (XAUUSD)</option>
+                                <option value="EURUSD">EUR / USD</option>
+                                <option value="BTCUSD">BITCOIN (BTCUSD)</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="getAnalysis()">Get AI Analysis</button>
                     </div>
-                    <button class="btn" onclick="runAnalysis()">طلب التحليل الفني الفوري</button>
-                    <div id="analysisResult"></div>
+
+                    <div id="analysisResult" class="ai-card" style="display:none;"></div>
+
+                    <div class="ai-card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fa-solid fa-bolt" style="color:var(--gold);"></i> Currency Strength Index</span>
+                        </div>
+                        <div class="strength-row">
+                            <span style="font-size:12px; width:40px;">USD</span>
+                            <div class="bar-bg"><div class="bar-fill" style="width:85%; background:var(--accent-green);"></div></div>
+                            <span style="font-size:12px; font-weight:bold;">85%</span>
+                        </div>
+                        <div class="strength-row">
+                            <span style="font-size:12px; width:40px;">EUR</span>
+                            <div class="bar-bg"><div class="bar-fill" style="width:42%; background:var(--gold);"></div></div>
+                            <span style="font-size:12px; font-weight:bold;">42%</span>
+                        </div>
+                        <div class="strength-row">
+                            <span style="font-size:12px; width:40px;">GBP</span>
+                            <div class="bar-bg"><div class="bar-fill" style="width:60%; background:var(--accent-blue);"></div></div>
+                            <span style="font-size:12px; font-weight:bold;">60%</span>
+                        </div>
+                    </div>
                 `;
 
-                // محتوى التوصيات
-                document.getElementById('signalsBody').innerHTML = `
-                    <h3>📈 إشارات التداول الذكية</h3>
-                    <div class="form-group">
-                        <label>نوع التداول:</label>
-                        <select id="signalType">
-                            <option value="forex">فوركس / ذهب (مدى متوسط)</option>
-                            <option value="quick">تداول سريع (دقيقة إلى 5 دقائق)</option>
-                        </select>
+                // Populate Signals
+                document.getElementById('signalsContent').innerHTML = `
+                    <div class="ai-card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fa-solid fa-robot" style="color:var(--accent-blue);"></i> AI Signal Generator</span>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Trading Mode</label>
+                            <select id="modeSelect" class="custom-select">
+                                <option value="quick">Quick Trading (1 - 5 Min)</option>
+                                <option value="forex">Forex & Commodities</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="generateSignal()">Generate Signal</button>
                     </div>
-                    <button class="btn" onclick="fetchSignal()">الحصول على الصفقة</button>
+
                     <div id="signalResult"></div>
                 `;
 
-                // محتوى السجل
-                document.getElementById('historyBody').innerHTML = `
-                    <h3>📜 سجل الأداء والصفقات السابقة</h3>
-                    <div class="box-result">
-                        <p style="margin:2px 0; color:#10b981;">✅ صفقة ذهب (BUY) - ربح +32 نقطة</p>
-                        <p style="margin:2px 0; color:#ef4444;">❌ صفقة يورو دولار (SELL) - خسارة -8 نقاط</p>
-                        <p style="margin:2px 0; color:#10b981;">✅ صفقة سريعة (5 Min) - ربح ناجح</p>
+                // Populate History
+                document.getElementById('historyContent').innerHTML = `
+                    <div class="ai-card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fa-solid fa-list-check" style="color:var(--accent-green);"></i> Recent AI Signals</span>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <div class="data-box" style="display:flex; justify-space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:bold; font-size:13px;">XAUUSD (Buy)</div>
+                                    <div class="data-label">TP1 Reached (+32 Pips)</div>
+                                </div>
+                                <span style="color:var(--accent-green); font-weight:bold;">WIN 🟢</span>
+                            </div>
+                            <div class="data-box" style="display:flex; justify-space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:bold; font-size:13px;">EURUSD (Quick 1M)</div>
+                                    <div class="data-label">Call Signal Successful</div>
+                                </div>
+                                <span style="color:var(--accent-green); font-weight:bold;">WIN 🟢</span>
+                            </div>
+                        </div>
                     </div>
                 `;
 
-                alert('تم التحقق بنجاح! تم فتح كافة ميزات المنصة.');
+                alert("Account Verified Successfully! Welcome to AI Plus.");
             } else {
-                errorElement.style.display = 'block';
+                err.style.display = 'block';
             }
         }
 
-        function runAnalysis() {
+        function getAnalysis() {
             const asset = document.getElementById('assetSelect').value;
-            document.getElementById('analysisResult').innerHTML = `
-                <div class="box-result">
-                    <p style="margin:2px 0;"><strong>الزوج:</strong> ${asset}</p>
-                    <p style="margin:2px 0;"><strong>الاتجاه العام:</strong> صاعد (Bullish Trend) 🟢</p>
-                    <p style="margin:2px 0;"><strong>حالة المؤشرات:</strong> RSI قرب مناطق التشبع، وبداية تقاطع إيجابي على الموفينج.</p>
-                    <p style="margin:2px 0;"><strong>قوة الدولار الآن:</strong> مرتفعة نسبياً بناءً على الأخبار.</p>
+            const res = document.getElementById('analysisResult');
+            res.style.display = 'block';
+            res.innerHTML = `
+                <div class="card-header">
+                    <span class="card-title">${asset} Analysis</span>
+                    <span class="badge-status badge-active">BEARISH / DOWN</span>
+                </div>
+                <p style="font-size:13px; color:var(--text-secondary);">
+                    Price trading below Moving Average (200). Bollinger Bands showing contraction, expecting breakdown.
+                </p>
+                <div class="signal-grid">
+                    <div class="data-box"><div class="data-label">Support 1</div><div class="data-val">2710.50</div></div>
+                    <div class="data-box"><div class="data-label">Resistance 1</div><div class="data-val">2738.00</div></div>
                 </div>
             `;
         }
 
-        function fetchSignal() {
-            const type = document.getElementById('signalType').value;
-            if(type === 'forex') {
-                document.getElementById('signalResult').innerHTML = `
-                    <div class="box-result">
-                        <p style="margin:2px 0;"><strong>الأصل:</strong> الذهب (XAUUSD)</p>
-                        <p style="margin:2px 0;"><strong>العملية:</strong> شراء (BUY) 🟢</p>
-                        <p style="margin:2px 0;"><strong>نسبة قوة الصفقة:</strong> 78% 🔥</p>
-                        <p style="margin:2px 0;"><strong>سعر الدخول:</strong> 2718.00</p>
-                        <p style="margin:2px 0;"><strong>الأهداف:</strong> TP1: 2728 | TP2: 2738</p>
-                        <p style="margin:2px 0;"><strong>وقف الخسارة:</strong> 2710</p>
+        function generateSignal() {
+            const mode = document.getElementById('modeSelect').value;
+            const res = document.getElementById('signalResult');
+
+            if (mode === 'quick') {
+                res.innerHTML = `
+                    <div class="ai-card" style="border-left:4px solid var(--accent-green);">
+                        <div class="signal-header">
+                            <span class="pair-title">EUR / USD (1 MIN)</span>
+                            <span class="signal-action action-buy">CALL 🟢</span>
+                        </div>
+                        <div style="margin-top:12px; font-size:13px;">
+                            <strong>AI Accuracy Strength:</strong> <span style="color:var(--accent-green);">84%</span>
+                        </div>
+                        <div class="signal-grid">
+                            <div class="data-box"><div class="data-label">Entry Price</div><div class="data-val">1.08420</div></div>
+                            <div class="data-box"><div class="data-label">Timeframe</div><div class="data-val">60 Sec</div></div>
+                        </div>
                     </div>
                 `;
             } else {
-                document.getElementById('signalResult').innerHTML = `
-                    <div class="box-result">
-                        <p style="margin:2px 0;"><strong>نوع التداول:</strong> تداول سريع (5 دقائق)</p>
-                        <p style="margin:2px 0;"><strong>العملية المقترحة:</strong> صعود (CALL) 🟢</p>
-                        <p style="margin:2px 0;"><strong>نسبة الدقة:</strong> 85%</p>
+                res.innerHTML = `
+                    <div class="ai-card" style="border-left:4px solid var(--accent-green);">
+                        <div class="signal-header">
+                            <span class="pair-title">XAUUSD (GOLD)</span>
+                            <span class="signal-action action-buy">BUY 🟢</span>
+                        </div>
+                        <div style="margin-top:12px; font-size:13px;">
+                            <strong>AI Confidence:</strong> <span style="color:var(--accent-blue);">78%</span>
+                        </div>
+                        <div class="signal-grid">
+                            <div class="data-box"><div class="data-label">Entry Zone</div><div class="data-val">2718 - 2720</div></div>
+                            <div class="data-box"><div class="data-label">Stop Loss</div><div class="data-val">2710.00</div></div>
+                            <div class="data-box"><div class="data-label">Target 1</div><div class="data-val">2728.00</div></div>
+                            <div class="data-box"><div class="data-label">Target 2</div><div class="data-val">2740.00</div></div>
+                        </div>
                     </div>
                 `;
             }
