@@ -3,234 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق مساعد التداول الاحترافي</title>
+    <title>مساعد التداول والتحليل</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-gold: #f59e0b;
-            --accent-blue: #3b82f6;
-            --green: #22c55e;
-            --text-color: #f8fafc;
-            --text-sub: #94a3b8;
+            --bg-color: #1a2234;
+            --card-bg: #232d42;
+            --text-color: #ffffff;
+            --accent-color: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --secondary-color: #3b82f6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --border-color: #334155;
         }
 
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 16px;
-            box-sizing: border-box;
+            padding: 15px;
             direction: rtl;
         }
 
         .header {
             text-align: center;
-            padding: 10px 0 20px 0;
-        }
-
-        .header h1 {
-            font-size: 20px;
-            color: var(--accent-gold);
-            margin: 5px 0;
-        }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: space-around;
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 6px;
             margin-bottom: 20px;
         }
 
+        .header h2 {
+            margin: 5px 0;
+            color: var(--accent-color);
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
         .tab-btn {
+            flex: 1;
             background: none;
             border: none;
-            color: var(--text-sub);
-            padding: 10px 14px;
+            color: #94a3b8;
+            padding: 10px;
+            font-size: 14px;
             font-weight: bold;
-            font-size: 13px;
             cursor: pointer;
             border-radius: 8px;
-            transition: 0.3s;
-            flex: 1;
+            transition: all 0.3s ease;
         }
 
         .tab-btn.active {
-            background: var(--accent-blue);
-            color: #ffffff;
+            background-color: var(--secondary-color);
+            color: white;
         }
 
-        .section {
+        .tab-content {
             display: none;
-            background: var(--card-bg);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
-            border: 1px solid #334155;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-            text-align: right;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 13px;
-            color: var(--text-sub);
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: #fff;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--accent-gold), #d97706);
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
-        }
-
-        .btn-blue {
-            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
-            color: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
-            background: rgba(34, 197, 94, 0.2);
-            color: var(--green);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .signal-card {
-            background: #0f172a;
-            border-radius: 10px;
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--accent-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-active {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-top: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        input {
+            width: 100%;
             padding: 12px;
-            margin-bottom: 10px;
-            border-right: 4px solid var(--accent-gold);
+            background-color: #111827;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--accent-gradient);
+            color: #111827;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .signal-box {
+            background: #1e293b;
+            border-right: 4px solid var(--success-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .calc-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .alert-error {
+            color: var(--danger-color);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>📊 مساعد التداول والتحليل</h1>
-        <p style="font-size: 12px; color: var(--text-sub); margin: 0;">منصة إدارة الحسابات والتوصيات اليومية</p>
+        <h2>📊 مساعد التداول والتحليل</h2>
+        <p>منصة إدارة الحسابات والتوصيات اليومية</p>
     </div>
 
-    <!-- الشريط العلوي للتنقل -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('account')">الحساب</button>
-        <button class="tab-btn" onclick="switchTab('signals')">التوصيات</button>
-        <button class="tab-btn" onclick="switchTab('risk')">إدارة المخاطر</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('account', this)">الحساب</button>
+        <button class="tab-btn" onclick="switchTab('signals', this)">التوصيات</button>
+        <button class="tab-btn" onclick="switchTab('risk', this)">إدارة المخاطر</button>
     </div>
 
-    <!-- قسم الحساب والتحقق -->
-    <div id="account" class="section active">
-        <span class="status-badge">● حالة الحساب: بانتظار التفعيل</span>
-        <h3>تأكيد حساب التداول</h3>
-        <p style="font-size: 13px; color: var(--text-sub);">قم بإدخال رقم معرف التداول (Trader ID) الخاص بك للتحقق من تفعيل الاشتراك:</p>
-        
-        <div class="input-group">
-            <label>رقم معرف الحساب (Trader ID):</label>
-            <input type="number" id="traderId" placeholder="مثال: 8594032">
-        </div>
-
-        <button class="btn" onclick="verifyAccount()">تأكيد وتفعيل الحساب</button>
-    </div>
-
-    <!-- قسم التوصيات والتحليلات -->
-    <div id="signals" class="section">
-        <h3>🔥 تحليلات وتوصيات الذهب (XAUUSD)</h3>
-        
-        <div class="signal-card">
-            <div style="display:flex; justify-content:space-between;">
-                <strong>XAUUSD - شراء (BUY)</strong>
-                <span style="color:var(--green); font-size:12px;">نشطة</span>
+    <!-- 1. تبويب الحساب -->
+    <div id="account" class="tab-content active">
+        <div class="card">
+            <div id="badgeStatus" class="status-badge status-pending">🟡 حالة الحساب: بانتظار التفعيل</div>
+            <h3>تأكيد حساب التداول</h3>
+            <p>قم بإدخال رقم معرف التداول (Trader ID) الخاص بك لتفعيل الاشتراك:</p>
+            
+            <div class="form-group">
+                <label>رقم معرف الحساب (Trader ID):</label>
+                <input type="text" id="traderIdInput" placeholder="أدخل الرقم هنا...">
             </div>
-            <p style="font-size: 12px; color: var(--text-sub); margin: 5px 0;">نقطة الدخول: 2650.00 | الهدف: 2665.00</p>
-            <p style="font-size: 11px; color: #ef4444; margin: 0;">إيقاف الخسارة: 2642.00</p>
-        </div>
 
-        <p style="font-size: 12px; color: var(--text-sub); text-align: center; margin-top: 15px;">
-            يتم تحديث التحليلات تلقائياً مع إغلاق كل شمعة 4 ساعات.
-        </p>
+            <div id="errorMsg" class="alert-error">⚠️ رقم الـ ID غير مسجل أو غير مفعل بعد، يرجى التسجيل عبر رابط الإحالة.</div>
+
+            <button class="btn" onclick="verifyTrader()">تأكيد وتفعيل الحساب</button>
+        </div>
     </div>
 
-    <!-- قسم حاسبة إدارة المخاطر -->
-    <div id="risk" class="section">
-        <h3>🧮 حاسبة حجم اللوت (Lot Size)</h3>
-        
-        <div class="input-group">
-            <label>رأس المال ($):</label>
-            <input type="number" id="balance" placeholder="مثال: 500">
+    <!-- 2. تبويب التوصيات -->
+    <div id="signals" class="tab-content">
+        <div class="card">
+            <div id="signalsBody">
+                <div style="text-align: center; padding: 20px;">
+                    <h3>🔒 المحتوى مقفل</h3>
+                    <p>قم بتفعيل الحساب من تبويب (الحساب) لفتح التوصيات.</p>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="input-group">
-            <label>نسبة المخاطرة (%):</label>
-            <input type="number" id="riskPercent" value="2">
+    <!-- 3. تبويب إدارة المخاطر -->
+    <div id="risk" class="tab-content">
+        <div class="card">
+            <div id="riskBody">
+                <div style="text-align: center; padding: 20px;">
+                    <h3>🔒 المحتوى مقفل</h3>
+                    <p>قم بتفعيل الحساب من تبويب (الحساب) لاستخدام حاسبة المخاطر.</p>
+                </div>
+            </div>
         </div>
-
-        <button class="btn btn-blue" onclick="calculateLot()">حساب حجم اللوت المناسب</button>
-
-        <div id="riskResult" style="margin-top: 15px; text-align: center; font-weight: bold; color: var(--accent-gold);"></div>
     </div>
 
     <script>
-        Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
+        // رقم الـ Trader ID الخاص بك كمالك للحساب
+        const OWNER_ID = "139822533";
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            btn.classList.add('active');
         }
 
-        function verifyAccount() {
-            const id = document.getElementById('traderId').value;
-            if(id) {
-                Telegram.WebApp.showAlert('تم إرسال رقم الحساب (' + id + ') بنجاح! جاري التحقق من التفعيل...');
+        function verifyTrader() {
+            const idVal = document.getElementById('traderIdInput').value.trim();
+            const errorElement = document.getElementById('errorMsg');
+
+            if (!idVal) {
+                alert('يرجى كتابة رقم Trader ID أولاً');
+                return;
+            }
+
+            // التحقق مما إذا كان الرقم هو رقمك المعين
+            if (idVal === OWNER_ID) {
+                errorElement.style.display = 'none';
+
+                // تحديث حالة الحساب بـ مفعل
+                document.getElementById('badgeStatus').className = 'status-badge status-active';
+                document.getElementById('badgeStatus').innerText = '🟢 حالة الحساب: مفعل بنجاح (حساب المالك)';
+
+                // فتح قسم التوصيات
+                document.getElementById('signalsBody').innerHTML = `
+                    <h3>📈 التوصيات المباشرة (XAUUSD)</h3>
+                    <div class="signal-box">
+                        <p style="margin:2px 0;"><strong>الزوج:</strong> الذهب مقابل الدولار (XAUUSD)</p>
+                        <p style="margin:2px 0;"><strong>النوع:</strong> شراء (BUY) 🟢</p>
+                        <p style="margin:2px 0;"><strong>منطقة الدخول:</strong> 2720.00 - 2715.00</p>
+                        <p style="margin:2px 0;"><strong>الهدف الأول:</strong> 2730.00 🎯</p>
+                        <p style="margin:2px 0;"><strong>الهدف الثاني:</strong> 2742.00 🎯</p>
+                        <p style="margin:2px 0;"><strong>وقف الخسارة:</strong> 2708.00 🛑</p>
+                    </div>
+                `;
+
+                // فتح قسم إدارة المخاطر وحاسبة اللوت
+                document.getElementById('riskBody').innerHTML = `
+                    <h3>🧮 حاسبة اللوت وإدارة المخاطر</h3>
+                    <div class="calc-box">
+                        <div class="form-group">
+                            <label>رأس المال ($):</label>
+                            <input type="number" id="capital" value="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>نسبة المخاطرة (%):</label>
+                            <input type="number" id="riskPct" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label>عدد نقاط الستوب (Pips):</label>
+                            <input type="number" id="stopPips" value="30">
+                        </div>
+                        <button class="btn" onclick="calcLot()">احسب اللوت المناسب</button>
+                        <div id="calcRes" style="margin-top:10px; font-weight:bold; color:#f59e0b;"></div>
+                    </div>
+                `;
+
+                alert('أهلاً بك يا محمد! تم التحقق بنجاح وفتح جميع أقسام التطبيق.');
             } else {
-                Telegram.WebApp.showAlert('يرجى إدخال رقم معرف الحساب أولاً.');
+                errorElement.style.display = 'block';
             }
         }
 
-        function calculateLot() {
-            const balance = document.getElementById('balance').value;
-            const risk = document.getElementById('riskPercent').value;
-            if(balance && risk) {
-                const amount = (balance * (risk / 100)).toFixed(2);
-                document.getElementById('riskResult').innerText = 'المبلغ المخاطر به: $' + amount;
-            }
+        function calcLot() {
+            const cap = parseFloat(document.getElementById('capital').value) || 0;
+            const risk = parseFloat(document.getElementById('riskPct').value) || 0;
+            const pips = parseFloat(document.getElementById('stopPips').value) || 1;
+
+            const riskAmount = cap * (risk / 100);
+            const lot = (riskAmount / (pips * 10)).toFixed(2);
+
+            document.getElementById('calcRes').innerText = `حجم العقود المقترح (Lot): ${lot} لوت | قيمة المخاطرة: ${riskAmount}$`;
         }
     </script>
 </body>
