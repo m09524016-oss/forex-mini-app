@@ -238,7 +238,6 @@
     </div>
 
     <script>
-        // رقم الـ Trader ID الخاص بك كمالك للحساب
         const OWNER_ID = "139822533";
 
         function switchTab(tabId, btn) {
@@ -258,15 +257,12 @@
                 return;
             }
 
-            // التحقق مما إذا كان الرقم هو رقمك المعين
             if (idVal === OWNER_ID) {
                 errorElement.style.display = 'none';
 
-                // تحديث حالة الحساب بـ مفعل
                 document.getElementById('badgeStatus').className = 'status-badge status-active';
                 document.getElementById('badgeStatus').innerText = '🟢 حالة الحساب: مفعل بنجاح (حساب المالك)';
 
-                // فتح قسم التوصيات
                 document.getElementById('signalsBody').innerHTML = `
                     <h3>📈 التوصيات المباشرة (XAUUSD)</h3>
                     <div class="signal-box">
@@ -279,7 +275,6 @@
                     </div>
                 `;
 
-                // فتح قسم إدارة المخاطر وحاسبة اللوت
                 document.getElementById('riskBody').innerHTML = `
                     <h3>🧮 حاسبة اللوت وإدارة المخاطر</h3>
                     <div class="calc-box">
