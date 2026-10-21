@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
         if (message && message.text === '/start') {
             const chatId = message.chat.id;
-            const BOT_TOKEN = "7896024102:AAH..."; // توكين البوت الخاص بك
+            const BOT_TOKEN = "8791327298:AAGjVQijrSduhx29RrkOHGqeIInkQabUSqc";
 
             const text = `👋 **أهلاً بك في بوت ومساعد التداول اليومي!**\n\n` +
                          `للبدء بالحصول على الإشارات والتحليلات وحاسبة اللوت، يرجى اتباع الخطوات التالية:\n\n` +
