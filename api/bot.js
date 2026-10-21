@@ -10,11 +10,11 @@ export default async function handler(req, res) {
             const chatId = message.chat.id;
             const BOT_TOKEN = "8791327298:AAGjVQijrSduhx29RrkOHGqeIInkQabUSqc";
 
-            const text = `👋 **أهلاً بك في بوت ومساعد التداول اليومي!**\n\n` +
-                         `للبدء بالحصول على الإشارات والتحليلات وحاسبة اللوت، يرجى اتباع الخطوات التالية:\n\n` +
-                         `1️⃣ قم بالتسجيل في المنصة عبر رابط الإحالة الرسمي:\n` +
-                         `🔗 https://u3.shortlink.io/smart/QNeefalAVa9Zr2\n\n` +
-                         `2️⃣ اضغط على زر **"📈 فتح منصة التداول"** بالأسفل وقم بإدخال **Trader ID** الخاص بك للتحقق والتفعيل الفوري.`;
+            const text = "👋 أهلاً بك في بوت ومساعد التداول اليومي!\n\n" +
+                         "للبدء بالحصول على الإشارات والتحليلات وحاسبة اللوت، يرجى اتباع الخطوات التالية:\n\n" +
+                         "1️⃣ قم بالتسجيل في المنصة عبر رابط الإحالة الرسمي:\n" +
+                         "https://u3.shortlink.io/smart/QNeefalAVa9Zr2\n\n" +
+                         "2️⃣ اضغط على زر 'فتح المنصة' بالأسفل وقم بإدخال Trader ID الخاص بك للتحقق والتفعيل الفوري.";
 
             const replyMarkup = {
                 inline_keyboard: [
@@ -33,13 +33,12 @@ export default async function handler(req, res) {
                 ]
             };
 
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chat_id: chatId,
                     text: text,
-                    parse_mode: 'Markdown',
                     reply_markup: replyMarkup
                 })
             });
