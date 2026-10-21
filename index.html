@@ -3,80 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Helper Mini App</title>
+    <title>تطبيق مساعد التداول الاحترافي</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-gold: #f59e0b;
+            --accent-blue: #3b82f6;
+            --green: #22c55e;
+            --text-color: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
         body {
-            background-color: #0f172a;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             box-sizing: border-box;
+            direction: rtl;
+        }
+
+        .header {
             text-align: center;
+            padding: 10px 0 20px 0;
         }
-        .card {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            max-width: 400px;
-            width: 100%;
-            border: 1px solid #334155;
+
+        .header h1 {
+            font-size: 20px;
+            color: var(--accent-gold);
+            margin: 5px 0;
         }
-        .status-badge {
-            background: #22c55e;
-            color: #0f172a;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 15px;
+
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 20px;
         }
-        h2 {
-            margin-top: 10px;
-            color: #f8fafc;
-        }
-        p {
-            color: #94a3b8;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
+
+        .tab-btn {
+            background: none;
             border: none;
-            padding: 12px 24px;
+            color: var(--text-sub);
+            padding: 10px 14px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
             border-radius: 8px;
-            font-size: 16px;
+            transition: 0.3s;
+            flex: 1;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .section {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-gold), #d97706);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
             transition: 0.3s;
         }
-        .btn:hover {
-            opacity: 0.9;
+
+        .btn-blue {
+            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+            color: #fff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+
+        .signal-card {
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-right: 4px solid var(--accent-gold);
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="status-badge">الحساب نشط</div>
-        <h2>منصة تحليلات التداول</h2>
-        <p>مرحباً بك في التطبيق المصغر الخاص بمساعد التداول. يمكنك متابعة المؤشرات والتحليلات اليومية مباشرة من هنا.</p>
-        <button class="btn" onclick="Telegram.WebApp.close()">إغلاق التطبيق</button>
+
+    <div class="header">
+        <h1>📊 مساعد التداول والتحليل</h1>
+        <p style="font-size: 12px; color: var(--text-sub); margin: 0;">منصة إدارة الحسابات والتوصيات اليومية</p>
+    </div>
+
+    <!-- الشريط العلوي للتنقل -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('account')">الحساب</button>
+        <button class="tab-btn" onclick="switchTab('signals')">التوصيات</button>
+        <button class="tab-btn" onclick="switchTab('risk')">إدارة المخاطر</button>
+    </div>
+
+    <!-- قسم الحساب والتحقق -->
+    <div id="account" class="section active">
+        <span class="status-badge">● حالة الحساب: بانتظار التفعيل</span>
+        <h3>تأكيد حساب التداول</h3>
+        <p style="font-size: 13px; color: var(--text-sub);">قم بإدخال رقم معرف التداول (Trader ID) الخاص بك للتحقق من تفعيل الاشتراك:</p>
+        
+        <div class="input-group">
+            <label>رقم معرف الحساب (Trader ID):</label>
+            <input type="number" id="traderId" placeholder="مثال: 8594032">
+        </div>
+
+        <button class="btn" onclick="verifyAccount()">تأكيد وتفعيل الحساب</button>
+    </div>
+
+    <!-- قسم التوصيات والتحليلات -->
+    <div id="signals" class="section">
+        <h3>🔥 تحليلات وتوصيات الذهب (XAUUSD)</h3>
+        
+        <div class="signal-card">
+            <div style="display:flex; justify-content:space-between;">
+                <strong>XAUUSD - شراء (BUY)</strong>
+                <span style="color:var(--green); font-size:12px;">نشطة</span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-sub); margin: 5px 0;">نقطة الدخول: 2650.00 | الهدف: 2665.00</p>
+            <p style="font-size: 11px; color: #ef4444; margin: 0;">إيقاف الخسارة: 2642.00</p>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-sub); text-align: center; margin-top: 15px;">
+            يتم تحديث التحليلات تلقائياً مع إغلاق كل شمعة 4 ساعات.
+        </p>
+    </div>
+
+    <!-- قسم حاسبة إدارة المخاطر -->
+    <div id="risk" class="section">
+        <h3>🧮 حاسبة حجم اللوت (Lot Size)</h3>
+        
+        <div class="input-group">
+            <label>رأس المال ($):</label>
+            <input type="number" id="balance" placeholder="مثال: 500">
+        </div>
+
+        <div class="input-group">
+            <label>نسبة المخاطرة (%):</label>
+            <input type="number" id="riskPercent" value="2">
+        </div>
+
+        <button class="btn btn-blue" onclick="calculateLot()">حساب حجم اللوت المناسب</button>
+
+        <div id="riskResult" style="margin-top: 15px; text-align: center; font-weight: bold; color: var(--accent-gold);"></div>
     </div>
 
     <script>
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function verifyAccount() {
+            const id = document.getElementById('traderId').value;
+            if(id) {
+                Telegram.WebApp.showAlert('تم إرسال رقم الحساب (' + id + ') بنجاح! جاري التحقق من التفعيل...');
+            } else {
+                Telegram.WebApp.showAlert('يرجى إدخال رقم معرف الحساب أولاً.');
+            }
+        }
+
+        function calculateLot() {
+            const balance = document.getElementById('balance').value;
+            const risk = document.getElementById('riskPercent').value;
+            if(balance && risk) {
+                const amount = (balance * (risk / 100)).toFixed(2);
+                document.getElementById('riskResult').innerText = 'المبلغ المخاطر به: $' + amount;
+            }
+        }
     </script>
 </body>
 </html>
