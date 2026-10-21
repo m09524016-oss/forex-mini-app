@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد التداول والتحليل</title>
+    <title>مساعد التداول والتحليل الاحترافي</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #1a2234;
-            --card-bg: #232d42;
-            --text-color: #ffffff;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
             --accent-color: #f59e0b;
             --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --secondary-color: #3b82f6;
+            --secondary-color: #2563eb;
             --success-color: #10b981;
             --danger-color: #ef4444;
             --border-color: #334155;
@@ -23,22 +23,23 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 12px;
             direction: rtl;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .header h2 {
             margin: 5px 0;
             color: var(--accent-color);
+            font-size: 20px;
         }
 
         .header p {
-            font-size: 13px;
+            font-size: 12px;
             color: #94a3b8;
             margin: 0;
         }
@@ -47,18 +48,20 @@
             display: flex;
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 20px;
+            padding: 4px;
+            margin-bottom: 15px;
             border: 1px solid var(--border-color);
+            overflow-x: auto;
         }
 
         .tab-btn {
             flex: 1;
+            white-space: nowrap;
             background: none;
             border: none;
             color: #94a3b8;
-            padding: 10px;
-            font-size: 14px;
+            padding: 8px 10px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 8px;
@@ -80,19 +83,20 @@
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 16px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .status-pending {
@@ -109,37 +113,37 @@
 
         h3 {
             margin-top: 0;
-            font-size: 18px;
+            font-size: 16px;
+            color: var(--accent-color);
         }
 
         p {
-            font-size: 14px;
+            font-size: 13px;
             color: #cbd5e1;
             line-height: 1.5;
         }
 
         .form-group {
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         label {
             display: block;
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 12px;
+            margin-bottom: 6px;
             color: #94a3b8;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            background-color: #111827;
+            padding: 10px;
+            background-color: #0f172a;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         input:focus {
@@ -149,36 +153,43 @@
         .btn {
             width: 100%;
             background: var(--accent-gradient);
-            color: #111827;
+            color: #0f172a;
             border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 15px;
-            transition: opacity 0.2s;
+            margin-top: 12px;
         }
 
         .signal-box {
-            background: #1e293b;
+            background: #0f172a;
             border-right: 4px solid var(--success-color);
             padding: 12px;
             border-radius: 8px;
             margin-top: 10px;
         }
 
-        .calc-box {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
         .alert-error {
             color: var(--danger-color);
-            font-size: 13px;
-            margin-top: 10px;
+            font-size: 12px;
+            margin-top: 8px;
             display: none;
+        }
+
+        .rule-item {
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .locked-msg {
+            text-align: center;
+            padding: 25px 10px;
+            color: #94a3b8;
         }
     </style>
 </head>
@@ -186,13 +197,15 @@
 
     <div class="header">
         <h2>📊 مساعد التداول والتحليل</h2>
-        <p>منصة إدارة الحسابات والتوصيات اليومية</p>
+        <p>المنصة المتقدمة للتحليل وإدارة مخاطر الفوركس والذهب</p>
     </div>
 
+    <!-- شريط التبويبات -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('account', this)">الحساب</button>
         <button class="tab-btn" onclick="switchTab('signals', this)">التوصيات</button>
-        <button class="tab-btn" onclick="switchTab('risk', this)">إدارة المخاطر</button>
+        <button class="tab-btn" onclick="switchTab('risk', this)">حاسبة اللوت</button>
+        <button class="tab-btn" onclick="switchTab('analysis', this)">التحليل الفني</button>
     </div>
 
     <!-- 1. تبويب الحساب -->
@@ -200,14 +213,14 @@
         <div class="card">
             <div id="badgeStatus" class="status-badge status-pending">🟡 حالة الحساب: بانتظار التفعيل</div>
             <h3>تأكيد حساب التداول</h3>
-            <p>قم بإدخال رقم معرف التداول (Trader ID) الخاص بك لتفعيل الاشتراك:</p>
+            <p>قم بإدخال رقم معرف التداول (Trader ID) الخاص بك للتحقق وفتح كافة الأقسام:</p>
             
             <div class="form-group">
                 <label>رقم معرف الحساب (Trader ID):</label>
-                <input type="text" id="traderIdInput" placeholder="أدخل الرقم هنا...">
+                <input type="text" id="traderIdInput" placeholder="أدخل رقم ID هنا...">
             </div>
 
-            <div id="errorMsg" class="alert-error">⚠️ رقم الـ ID غير مسجل أو غير مفعل بعد، يرجى التسجيل عبر رابط الإحالة.</div>
+            <div id="errorMsg" class="alert-error">⚠️ رقم الـ ID غير مسجل أو غير مفعل، يرجى التسجيل من رابط الإحالة الرسمي.</div>
 
             <button class="btn" onclick="verifyTrader()">تأكيد وتفعيل الحساب</button>
         </div>
@@ -217,27 +230,43 @@
     <div id="signals" class="tab-content">
         <div class="card">
             <div id="signalsBody">
-                <div style="text-align: center; padding: 20px;">
+                <div class="locked-msg">
                     <h3>🔒 المحتوى مقفل</h3>
-                    <p>قم بتفعيل الحساب من تبويب (الحساب) لفتح التوصيات.</p>
+                    <p>يرجى تفعيل الحساب من تبويب (الحساب) لفتح التوصيات والإشارات اليومية.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 3. تبويب إدارة المخاطر -->
+    <!-- 3. تبويب إدارة المخاطر وحاسبة اللوت -->
     <div id="risk" class="tab-content">
         <div class="card">
             <div id="riskBody">
-                <div style="text-align: center; padding: 20px;">
+                <div class="locked-msg">
                     <h3>🔒 المحتوى مقفل</h3>
-                    <p>قم بتفعيل الحساب من تبويب (الحساب) لاستخدام حاسبة المخاطر.</p>
+                    <p>يرجى تفعيل الحساب لاستخدام حاسبة إدارة المخاطر وقواعد التداول الآمن.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. تبويب التحليل الفني -->
+    <div id="analysis" class="tab-content">
+        <div class="card">
+            <div id="analysisBody">
+                <div class="locked-msg">
+                    <h3>🔒 المحتوى مقفل</h3>
+                    <p>يرجى تفعيل الحساب للوصول إلى أدوات وقواعد التحليل الفني.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // رقم الـ ID الخاص بك كمالك للحساب
         const OWNER_ID = "139822533";
 
         function switchTab(tabId, btn) {
@@ -260,42 +289,63 @@
             if (idVal === OWNER_ID) {
                 errorElement.style.display = 'none';
 
+                // تحديث الشارة
                 document.getElementById('badgeStatus').className = 'status-badge status-active';
-                document.getElementById('badgeStatus').innerText = '🟢 حالة الحساب: مفعل بنجاح (حساب المالك)';
+                document.getElementById('badgeStatus').innerText = '🟢 حالة الحساب: مفعل بنجاح (المالك)';
 
+                // 1. فتح قسم التوصيات
                 document.getElementById('signalsBody').innerHTML = `
-                    <h3>📈 التوصيات المباشرة (XAUUSD)</h3>
+                    <h3>📈 أحدث توصيات الذهب المباشرة (XAUUSD)</h3>
                     <div class="signal-box">
-                        <p style="margin:2px 0;"><strong>الزوج:</strong> الذهب مقابل الدولار (XAUUSD)</p>
-                        <p style="margin:2px 0;"><strong>النوع:</strong> شراء (BUY) 🟢</p>
-                        <p style="margin:2px 0;"><strong>منطقة الدخول:</strong> 2720.00 - 2715.00</p>
-                        <p style="margin:2px 0;"><strong>الهدف الأول:</strong> 2730.00 🎯</p>
-                        <p style="margin:2px 0;"><strong>الهدف الثاني:</strong> 2742.00 🎯</p>
-                        <p style="margin:2px 0;"><strong>وقف الخسارة:</strong> 2708.00 🛑</p>
+                        <p style="margin:3px 0;"><strong>الزوج:</strong> XAUUSD (الذهب)</p>
+                        <p style="margin:3px 0;"><strong>النوع:</strong> شراء (BUY) 🟢</p>
+                        <p style="margin:3px 0;"><strong>منطقة الدخول:</strong> 2720.00 - 2715.00</p>
+                        <p style="margin:3px 0;"><strong>الهدف الأول:</strong> 2730.00 🎯</p>
+                        <p style="margin:3px 0;"><strong>الهدف الثاني:</strong> 2742.00 🎯</p>
+                        <p style="margin:3px 0;"><strong>وقف الخسارة:</strong> 2708.00 🛑</p>
                     </div>
                 `;
 
+                // 2. فتح قسم إدارة المخاطر وحاسبة اللوت
                 document.getElementById('riskBody').innerHTML = `
                     <h3>🧮 حاسبة اللوت وإدارة المخاطر</h3>
-                    <div class="calc-box">
-                        <div class="form-group">
-                            <label>رأس المال ($):</label>
-                            <input type="number" id="capital" value="1000">
-                        </div>
-                        <div class="form-group">
-                            <label>نسبة المخاطرة (%):</label>
-                            <input type="number" id="riskPct" value="2">
-                        </div>
-                        <div class="form-group">
-                            <label>عدد نقاط الستوب (Pips):</label>
-                            <input type="number" id="stopPips" value="30">
-                        </div>
-                        <button class="btn" onclick="calcLot()">احسب اللوت المناسب</button>
-                        <div id="calcRes" style="margin-top:10px; font-weight:bold; color:#f59e0b;"></div>
+                    <div class="form-group">
+                        <label>رأس المال الحالي ($):</label>
+                        <input type="number" id="capital" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>نسبة المخاطرة المسموحة (%):</label>
+                        <input type="number" id="riskPct" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>عدد نقاط الستوب لوز (Pips):</label>
+                        <input type="number" id="stopPips" value="30">
+                    </div>
+                    <button class="btn" onclick="calcLot()">احسب حجم العقد (Lot)</button>
+                    <div id="calcRes" style="margin-top:12px; font-weight:bold; color:var(--accent-color);"></div>
+
+                    <hr style="border-color:var(--border-color); margin: 20px 0;">
+
+                    <h3>🛡️ قواعد التداول الآمن:</h3>
+                    <div class="rule-item">📌 لا تخاطر بأكثر من 2% - 5% من رأس مالك في الصفقات الواحدة.</div>
+                    <div class="rule-item">📌 التزم دائماً بوضع أمر وقف الخسارة (Stop Loss) ولا تقم بتوسيعه.</div>
+                `;
+
+                // 3. فتح قسم التحليل الفني
+                document.getElementById('analysisBody').innerHTML = `
+                    <h3>📉 أدوات التحليل الفني اليومي</h3>
+                    <div class="rule-item">
+                        <strong>🕯️ إشارات الشموع اليابانية:</strong><br>
+                        الاعتماد على إغلاق شمعة H1 أو H4 لتأكيد كسر المستويات المحورية.
+                    </div>
+                    <div class="rule-item">
+                        <strong>📊 المؤشرات الفنية الموصى بها:</strong><br>
+                        • RSI (14): مراقبة مناطق التشبع الشرائي والبيعي (70 / 30).<br>
+                        • Bollinger Bands: لمتابعة الانفجار السعري عند تقلبات السوق.
                     </div>
                 `;
 
-                alert('أهلاً بك يا محمد! تم التحقق بنجاح وفتح جميع أقسام التطبيق.');
+                alert('أهلاً بك يا محمد! تم التفعيل بنجاح وفتح جميع أقسام المنصة.');
             } else {
                 errorElement.style.display = 'block';
             }
